@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>animation module test</title>
+    <style>
+    .canvasArea {
+        position: relative;
+        width: 600px;
+        height: 400px;
+    }
+    canvas { position:absolute;image-rendering:optimizeSpeed;}
+    .buttons {
+        position: absolute;
+    }
+    </style>
+
+    <script type="text/javascript" src="../js/lib/require-jquery.js"></script>
+    <script type="text/javascript">
+    var animation;
+    var swordman1 = {};
+    swordman1.hp = 10;
+    swordman1.maxHp = 10;
+    swordman1.unitName = "assasin";
+    swordman1.entryNum = 1;
+    swordman1.state = "idle";
+
+    var spearman2 = {};
+    spearman2.hp = 10;
+    spearman2.maxHp = 10;
+    spearman2.unitName = "spearman";
+    spearman2.entryNum = 4;
+    spearman2.state = "idle";
+
+    require.config({
+       baseUrl: '../js'
+    });
+
+    require(['animation', 'lib/class','lib/underscore.min'], function(Animation){
+        var entityCanvas = document.getElementById('entity');
+        entityCanvas.setAttribute('width', 600);
+        entityCanvas.setAttribute('height', 400);
+
+        var effectCanvas = document.getElementById('effect');
+        effectCanvas.setAttribute('width', 600);
+        effectCanvas.setAttribute('height', 400);
+
+        // 모듈 생성/시작
+        animation = new Animation(entityCanvas, effectCanvas, [swordman1, spearman2]);
+        animation.start();
+    });
+
+
+    function testAttack(){
+        swordman1.state = 'attack';
+        spearman2.state = 'attacked';
+        animation.attackTo(swordman1, spearman2,
+                    function(){
+                            swordman1.state = 'idle',
+                            spearman2.state = 'idle';
+                            alert('Attack Done!')
+                    });
+    }
+    </script>
+</head>
+<body>
+    <div class="canvasArea">
+        <canvas id="entity" style="z-index: 100">
+            Your browser does not support HTML5 canvas.
+        </canvas>
+        <canvas id="effect" style="z-index: 200;">
+        </canvas>
+    </div>
+
+
+    <div class="buttons">
+    <input type="button" onclick="testAttack();" value="attack spearman" />
+    <input type="button" onclick="animation.drawTitle('It\'s Title Test!!');" value="show title" />
+    </div>
+</body>
+</html>
